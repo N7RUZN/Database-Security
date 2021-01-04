@@ -1,0 +1,171 @@
+With such a vast amount of applications available, it can be difficult to manage passwords for each application you use. An alternative approach would be to manage your passwords using a password manager or a third party authentication service such as Google. Although these services can offer convenience, it's important to remember they also come with security risks. The options, as mentioned earlier, aren't practical in enterprise environments, and Access to the sensitive information contained in databases must be limited only to authorized personnel. It's common to find ourselves in situations where we forget our login credentials, and in this example, I focus on resetting credentials for MySQL in Windows and Linux environments.
+
+     
+    How to reset database credentials in Windows:
+
+    Must be logged in as an administrator
+
+     
+    Shutdown the MySQL service using:
+
+    service-manager or task manager
+
+    using the command-line
+
+     
+    Using the command-line navigate to the MySQL bin folder:
+
+    Ex. ```C:\Program Files\MySQL\MySQL Server 5.5\Bin```
+
+     
+    Pause MySQL permissions using the command
+
+    ```mysqld.exe -u root --skip-grant-tables```
+
+     
+    In a new terminal window, navigate to MySQL bin folder and run the following command:
+
+    ```mysqld.exe```
+
+     
+    Select the MySQL database:
+
+    ```use mysql;```
+
+     
+    Enter the following command to reset the database credentials:
+
+     
+    Replace ```NEW-PASSWORD``` with a new strong password.
+
+    ```UPDATE user SET Password = PASSWORD(```NEW-PASSWORD```) WHERE User = 'root';```
+    Exit MySQL using the following command and close all the command windows:
+
+    ```exit;```
+
+     
+    Finally, Restart the MySQL service.
+
+     
+
+    Source: https://www.customfitonline.com/news/2016/5/3/how-to-reset-your-mysql-password/
+
+     
+    How to reset database credentials in Unix Operating Systems:
+
+     
+
+    Must be logged in as an administrator
+
+     
+    Stop the MySQL service: 
+
+    In a terminal window and run the following command
+
+     
+
+    (Ubuntu operating system and Debian)
+
+    ```sudo /etc/init.d/mysql stop```
+
+     
+
+    (CentOS, Fedora, and Red Hat Enterprise Linux)
+
+    ```sudo /etc/init.d/mysqld stop```
+
+     
+    Start MySQL without using a password:
+
+     
+
+    ```sudo mysqld_safe --skip-grant-tables &```
+
+     
+    Connect to MySQL:
+
+    ```mysql -u root```
+
+     
+    Set a new MySQL password:
+
+     
+
+    ```update user set authentication_string=PASSWORD("NEW-PASSWORD") where User='root';```
+
+    ```flush privileges;```
+
+    ```quit```
+
+     
+    Stop and Start the MySQL service:
+
+     
+
+    (Ubuntu operating system and Debian)
+
+    ```sudo /etc/init.d/mysql stop```
+
+    ```sudo /etc/init.d/mysql start```
+
+     
+
+    (CentOS, Fedora, and Red Hat Enterprise Linux)
+
+    ```sudo /etc/init.d/mysqld stop```
+
+    ```sudo /etc/init.d/mysqld start```
+
+     
+    Log into the database with new credentials:
+
+     
+
+    ```mysql -u root -p```
+
+     
+
+    Source: https://support.rackspace.com/how-to/mysql-resetting-a-lost-mysql-root-password/
+    A few limitations of MySQL in a Windows environment:
+
+    Process Memory:
+    Windows 32-bit platforms:
+
+    Limited to 2GB of RAM within a single process, including MySQL. 
+
+    To use more than 2GB, use a 64-bit version of Windows.
+
+     
+    Limited ports
+
+    4,000 ports available for client connections, once a connection on a port closes, it takes two to four minutes before the port can be used; Which can cause the MySQL server to become unresponsive even though it is running. 
+
+     
+    Case-insensitive names
+
+    The file naming convention is not case-sensitive on Windows, so MySQL database and table names are also not case-sensitive on Windows. The only restriction is that the database and table names must be specified using the same case throughout a given statement. 
+
+     
+
+    The following statement would not work because it refers to a table both as employee_table and as EMPLOYEE_TABLE:
+
+     
+
+    ```mysql> SELECT * FROM employee_table WHERE EMPLOYEE_TABLE.col=1;```
+
+     
+    Directory and filenames
+
+    MySQL Server supports only directory and file names that are compatible with the current ANSI code pages.
+
+     
+
+    The following does not work in the Western locale.
+
+     
+
+    ```datadir="C:/私たちのプロジェクトのデータ"```
+
+     
+
+    Source: https://dev.mysql.com/doc/refman/8.0/en/windows-restrictions.html
